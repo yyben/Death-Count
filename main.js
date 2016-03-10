@@ -1,3 +1,14 @@
+d3.csv("./-w10503091722141437036921-c0120202.csv", function(d) {
+  
+  console.log(d);
+
+}, function(error, rows) {
+  console.log(rows);
+});
+
+
+
+
 // Generate a Bates distribution of 10 random variables.
 var values = d3.range(1000).map(d3.random.bates(10));
 
