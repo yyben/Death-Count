@@ -1,11 +1,31 @@
-console.log("hi");
-d3.csv("https://cdn.rawgit.com/yyben/Death-Count/master/-w10503091722141437036921-c0120202.csv", function(d) {
-  console.log('csv loading');
-  console.log(d);
+//file url: "https://cdn.rawgit.com/yyben/Death-Count/master/-w10503091722141437036921-c0120202.csv"
+//valMat valMat[year][itemID]
+//Interested male_items id:23-43    female_items id:45-65
+var valMat=[], csvdata=[], items=[] ,male_items=[], female_items=[], years=[];
+var iMaleID_start=23,MaleID_end=43, iFMaleID_start=45,iFMaleID_end=65;
+d3.text("https://cdn.rawgit.com/yyben/Death-Count/master/-w10503091722141437036921-c0120202.csv",function(text){
+    d3.csv.parseRows(text,function(d,i){
+        years.push(d[0]);
+        csvdata.push(d);
+    });
+    items=csvdata[1].slice(1,67);
+    male_items=csvdata[1].slice(24,45);
+    female_items=csvdata[1].slice(46,67);
+    years=years.slice(2,years.length-1);
 
-}, function(error, rows) {
-  console.log(rows);
+    for(var idx=2;idx<csvdata.length;idx++){
+        valMat.push(csvdata[idx].slice(1,csvdata[idx].length));
+    }
+    console.log(csvdata);//NaN  " - "
+    console.log(valMat);
+    console.log(male_items);
+    console.log(years);
+    for(var i=0;i<years.length;i++){
+        console.log(years[i]);
+        console.log(valMat[i][65]);
+    }
 });
+
 
 
 
