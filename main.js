@@ -1,4 +1,4 @@
-d3.csv("./-w10503091722141437036921-c0120202.csv", function(d) {
+d3.csv("https://cdn.rawgit.com/yyben/Death-Count/master/-w10503091722141437036921-c0120202.csv", function(d) {
   console.log('csv loading');
   console.log(d);
 
