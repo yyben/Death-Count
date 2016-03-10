@@ -1,5 +1,5 @@
 d3.csv("./-w10503091722141437036921-c0120202.csv", function(d) {
-  
+  console.log('csv loading');
   console.log(d);
 
 }, function(error, rows) {
