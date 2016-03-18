@@ -85,7 +85,7 @@ function draw(){
     var yText = function(d, i) { return y(d, i) + yScale.rangeBand() / 2; };
     var x = d3.scale.linear().domain([0, d3.max(data, barValue)]).range([0, maxBarWidth]);
     // svg container element
-    var chart = d3.select('#chart').append("svg")
+    var chart = d3.select('#chart1').append("svg")
       .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth)
       .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight);
     // grid line labels
