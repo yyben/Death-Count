@@ -6,7 +6,7 @@ var dataObj=[], itemNr=0;//dataObj for d3   e.g. [{"yr":"81年","val":1152},{"yr
 var valMat=[], csvdata=[], items=[] ,male_items=[], female_items=[], years=[];
 var valsMaleitem=[], valsFMaleitem=[];
 var iMaleID_start=23,MaleID_end=43, iFMaleID_start=45,iFMaleID_end=65;
-d3.text("https://cdn.rawgit.com/yyben/Death-Count/master/-w10503091722141437036921-c0120202.csv",function(text){
+d3.text("https://gitcdn.xyz/repo/yyben/Death-Count/raw/master/-w10503091722141437036921-c0120202.csv",function(text){
     d3.csv.parseRows(text,function(d,i){//parse every row from csv
         years.push(d[0]);
         csvdata.push(d);
