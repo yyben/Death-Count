@@ -266,9 +266,11 @@ function drawChart2(){
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
-  x.domain(allValsMal.map(function(d) { return d.yr; }));
-  y.domain([0, d3.max(allValsMal, function(d) { return d.val; })]);
+  xdomain=[95,96,97,98];
+  //x.domain(allValsMal.map(function(d) { return d.yr; }));
+  //y.domain([0, d3.max(allValsMal, function(d) { return d.val; })]);
+  x.domain(xdomain.map(function(d) { return d; }));
+  y.domain([nmod(480), nmod(30000)]);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -283,29 +285,66 @@ function drawChart2(){
       .attr("y", 0)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("人數");
+      .text("人數 [log2] ");
 
   // Define the line
   var valueline = d3.svg.line()
     .x(function(d) { return x(d.yr); })
-    .y(function(d) { return y(d.val); });    
+    .y(function(d) { return y(nmod(d.val)); });    
 
 
-  // Add the valueline path.
+    // Add the valueline path.
     svg.append("path")
         .attr("class", "line")
-        .attr("d", valueline(allValsMal));
+        .attr("d", valueline(valsMale[0]));
 
     // Add the scatterplot
     svg.selectAll("dot")
-        .data(allValsMal)
+        .data(valsMale[0])
       .enter().append("circle")
         .attr("r", 3.5)
         .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(d.val); });    
+        .attr("cy", function(d) { return y(nmod(d.val)); });    
+
+    // Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(valsMale[1]));
+
+    // Add the scatterplot
+    svg.selectAll("dot")
+        .data(valsMale[1])
+      .enter().append("circle")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.yr); })
+        .attr("cy", function(d) { return y(nmod(d.val)); });        
+
+    // Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(valsMale[2]));
+
+    // Add the scatterplot
+    svg.selectAll("dot")
+        .data(valsMale[2])
+      .enter().append("circle")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.yr); })
+        .attr("cy", function(d) { return y(nmod(d.val)); });        
 
 
+    // Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(valsMale[3]));
 
+    // Add the scatterplot
+    svg.selectAll("dot")
+        .data(valsMale[3])
+      .enter().append("circle")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.yr); })
+        .attr("cy", function(d) { return y(nmod(d.val)); });        
 
 
   // svg.selectAll(".bar")
@@ -318,7 +357,7 @@ function drawChart2(){
   //     .attr("height", function(d) { return height - y(d.val); });
 
 }
-function log2(val){
+function nmod(val){
   return Math.log(val)/ Math.LN2;
 }
 
