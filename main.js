@@ -136,8 +136,9 @@
 //announce variables
 var fnames=[];
 var ages=["~10","11~20","21~30","31~40","41~50","51~60","61~70","71~80","81~90","91~"], years=[95,96,97,98];
-var valsMale=[], valsFMale=[], tmpM=[], tmpFM=[];
+var valsMale=[], valsFMale=[];
 var allValsMal=[],allValsFMal=[];
+var valsMalByAge=[],valsFMalByAge=[], tmpM=[], tmpFM=[];
 fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.95.csv');
 fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.96.csv');
 fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.97.csv');
@@ -155,6 +156,9 @@ function parseData(error, death95, death96, death97, death98) {
   valsMale=genEmptyArr(years.length);
   valsFMale=genEmptyArr(years.length);
   for(var i=0;i<ages.length;i++){
+    
+
+
     valsMale[0].push({'yr':'95', 'age':ages[i] ,'val':parseInt(death95[i].Male)});
     valsMale[1].push({'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Male)});
     valsMale[2].push({'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Male)});
@@ -163,16 +167,22 @@ function parseData(error, death95, death96, death97, death98) {
     valsFMale[1].push({'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Female)});
     valsFMale[2].push({'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Female)});
     valsFMale[3].push({'yr':'98', 'age':ages[i] ,'val':parseInt(death98[i].Female)});
+
+
+    valsMalByAge.push([{'yr':'95', 'age':ages[i] ,'val':parseInt(death95[i].Male)},{'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Male)},{'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Male)},{'yr':'98', 'age':ages[i] ,'val':parseInt(death98[i].Male)}]);
+    valsFMalByAge.push([{'yr':'95', 'age':ages[i] ,'val':parseInt(death95[i].Female)},{'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Female)},{'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Female)},{'yr':'98', 'age':ages[i] ,'val':parseInt(death98[i].Female)}]);
+    
+
   }
 
 
   allValsMal=valsMale[0].concat(valsMale[1],valsMale[2],valsMale[3]);
   allValsFMal=valsFMale[0].concat(valsFMale[1],valsFMale[2],valsFMale[3]);
-  console.log(valsMale[0]);
-  console.log(allValsMal);
-  console.log(allValsFMal);
+  //console.log(valsMalByAge);
+  //console.log(allValsMal);
+  //console.log(allValsFMal);
 
-  drawChart2();
+  drawChart3();
 }
 function genEmptyArr(n){//generate an empty array by a given size 
     var arr=[];
@@ -227,14 +237,14 @@ function drawChart1(){
       .style("text-anchor", "end")
       .text("count");
 
-  // svg.selectAll(".bar")
-  //     .data(valsMale[0])
-  //   .enter().append("rect")
-  //     .attr("class", "bar")
-  //     .attr("x", function(d) { return x(d.age); })
-  //     .attr("width", x.rangeBand())
-  //     .attr("y", function(d) { return y(d.val); })
-  //     .attr("height", function(d) { return height - y(d.val); });
+  svg.selectAll(".bar")
+      .data(valsMale[0])
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.age); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.val); })
+      .attr("height", function(d) { return height - y(d.val); });
 
 }
 
@@ -346,16 +356,81 @@ function drawChart2(){
         .attr("cx", function(d) { return x(d.yr); })
         .attr("cy", function(d) { return y(nmod(d.val)); });        
 
+}
+function drawChart3(){
 
-  // svg.selectAll(".bar")
-  //     .data(valsMale[0])
-  //   .enter().append("rect")
-  //     .attr("class", "bar")
-  //     .attr("x", function(d) { return x(d.age); })
-  //     .attr("width", x.rangeBand())
-  //     .attr("y", function(d) { return y(d.val); })
-  //     .attr("height", function(d) { return height - y(d.val); });
+  colorPalette1=["#E1F5FE","#B3E5FC","#81D4FA","#4FC3F7","#29B6F6","#03A9F4","#039BE5","#0288D1","#0277BD","#01579B"];
 
+  var margin = {top: 20, right: 20, bottom: 30, left: 60},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+  var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 1.0);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickFormat(function(d){return '民國'+d+'年'});
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(10)
+      .tickFormat(function(d){return d});
+
+  var svg = d3.select("#chart1").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  
+  x.domain(years.map(function(d) { return d; }));
+  y.domain([nmod(480), nmod(30000)]);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(0)")
+      .attr("y", 0)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("人數 [log2] ");
+
+  // Define the line
+  var valueline = d3.svg.line()
+    .x(function(d) { return x(d.yr); })
+    .y(function(d) { return y(nmod(d.val)); });    
+
+  for(var i=0;i<ages.length;i++){
+    // Add the valueline path.
+    svg.append("path")
+        .attr({
+          'd': valueline(valsMalByAge[i]),
+          'y': 0,
+          'stroke': colorPalette1[i],
+          'stroke-width': '2px',
+          'fill': 'none'
+        });
+
+    // Add the scatterplot
+    svg.selectAll("dot")
+        .data(valsMalByAge[i])
+      .enter().append("circle")
+        .attr("r", 2)
+        .attr("cx", function(d) { return x(d.yr); })
+        .attr("cy", function(d) { return y(nmod(d.val)); });    
+  }      
 }
 function nmod(val){
   return Math.log(val)/ Math.LN2;
