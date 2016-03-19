@@ -1,4 +1,4 @@
-//file url: "https://cdn.rawgit.com/yyben/Death-Count/master/-w10503091722141437036921-c0120202.csv"
+
 //valMat valMat[year][itemID]
 //Interested male_items id:23-43    female_items id:45-65
 
@@ -52,6 +52,45 @@ d3.text("https://gitcdn.xyz/repo/yyben/Death-Count/master/-w10503091722141437036
     draw();
 });
 
+
+
+
+//announce variables
+var fnames=[];
+var ages=["~10","11~20","21~30","31~40","41~50","51~60","61~70","71~80","81~90","91~"], years=[95,96,97,98];
+var valsMale=[], valsFMale=[], tmpM=[], tmpFM=[];
+
+fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.95.csv');
+fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.96.csv');
+fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.97.csv');
+fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.98.csv');
+
+queue() //load multiple files
+  .defer(d3.csv, fnames[0])
+  .defer(d3.csv, fnames[1])
+  .defer(d3.csv, fnames[2])
+  .defer(d3.csv, fnames[3])
+  .await(parseData);
+
+function parseData(error, death95, death96, death97, death98) {
+  if(error) { console.log(error); }
+  valsMale=genEmptyArr(years.length);
+  valsFMale=genEmptyArr(years.length);
+  for(var i=0;i<ages.length;i++){
+    valsMale[0].push(death95[i].Male);
+    valsMale[1].push(death96[i].Male);
+    valsMale[2].push(death97[i].Male);
+    valsMale[3].push(death98[i].Male);
+    valsFMale[0].push(death95[i].Female);
+    valsFMale[1].push(death96[i].Female);
+    valsFMale[2].push(death97[i].Female);
+    valsFMale[3].push(death98[i].Female);
+  }
+
+  console.log(valsMale);
+  console.log(valsFMale);
+  
+}
 function genEmptyArr(n){//generate an empty array by a given size 
     var arr=[];
     for (var i=0;i<n;i++){
@@ -59,8 +98,6 @@ function genEmptyArr(n){//generate an empty array by a given size
     }
     return arr;
 }
-
-
 
 
 
