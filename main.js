@@ -239,24 +239,26 @@ function drawChart1(){
 }
 
 function drawChart2(){
-  var margin = {top: 20, right: 20, bottom: 30, left: 40},
+  var margin = {top: 20, right: 20, bottom: 30, left: 60},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
   var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
+    .rangeRoundBands([0, width], 1.0);
 
   var y = d3.scale.linear()
       .range([height, 0]);
 
   var xAxis = d3.svg.axis()
       .scale(x)
-      .orient("bottom");
+      .orient("bottom")
+      .tickFormat(function(d){return '民國'+d+'年'});
 
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
-      .ticks(10);
+      .ticks(10)
+      .tickFormat(function(d){return d});
 
   var svg = d3.select("#chart1").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -277,11 +279,11 @@ function drawChart2(){
       .attr("class", "y axis")
       .call(yAxis)
     .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("transform", "rotate(0)")
+      .attr("y", 0)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("count");
+      .text("人數");
 
   // Define the line
   var valueline = d3.svg.line()
