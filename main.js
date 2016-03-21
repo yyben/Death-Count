@@ -135,7 +135,7 @@
 //announce variables
 var logsS=true;//switch of log-scale    true:log2 scale,  false:normal scale
 var fnames=[];
-var ages=["~10","11~20","21~30","31~40","41~50","51~60","61~70","71~80","81~90","91~"], years=[95,96,97,98];
+var ages=[{'age':"~10"},{'age':"11~20"},{'age':"21~30"},{'age':"31~40"},{'age':"41~50"},{'age':"51~60"},{'age':"61~70"},{'age':"71~80"},{'age':"81~90"},{'age':"91~"}], years=[95,96,97,98];
 var valsMale=[], valsFMale=[];
 var allValsMal=[],allValsFMal=[];
 var valsMalByAge=[],valsFMalByAge=[], tmpM=[], tmpFM=[];
@@ -232,11 +232,20 @@ function drawChart(){
   .offset([-10, 0])
   .html(function(d) {return "<strong>數量:</strong> <span style='color:red'>" + d.val + "</span><strong>人</strong><br><strong>年度: 民國</strong> <span style='color:red'>" + d.yr + "</span><strong>年</strong><br><strong>年齡:</strong> <span style='color:red'>" + d.age + "</span><strong>歲</strong>"});
   
+  var age_tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([0, 0])
+  .html(function(d) {
+    console.log(d);return  "<strong>年齡:</strong> <span style='color:red'>" + d.age + "</span><strong>歲</strong>"});
+  
+
   x.domain(years.map(function(d) { return d; }));
   y.domain([nmod(480), nmod(30000)]);
   
   svg.call(tip);//for tooltip, infobox
-  
+  svg.call(age_tip);
+
+
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -267,6 +276,16 @@ function drawChart(){
           'stroke-width': '2px',
           'stroke-opacity': (malePathFilter[i]?1.0:0.1),
           'fill': 'none'
+        }).on('mouseover',function(d){
+
+          d3.select(this)
+            .style("stroke-width","6px");
+          //return age_tip.show;
+        } )
+        .on('mouseout',function(d){
+          d3.select(this)
+            .style("stroke-width","2px"); 
+            //return age_tip.hide;
         });
 
     // Add the scatterplot
@@ -274,6 +293,7 @@ function drawChart(){
         .data(valsMalByAge[i])
       .enter().append("circle")
         .attr("r", 2)
+        .style("fill", colorPalette1[i])
         .attr("cx", function(d) { return x(d.yr); })
         .attr("cy", function(d) { return y(nmod(d.val)); })
         .on('mouseover', tip.show)
@@ -289,17 +309,29 @@ function drawChart(){
           'stroke-width': '2px',
           'stroke-opacity': (femalePathFilter[i]?1.0:0.1),
           'fill': 'none'
+        })
+        .on('mouseover',function(d,i){ 
+          d3.select(this)
+            .style("stroke-width","6px");
+          //return age_tip.show;
+        } )
+        .on('mouseout',function(d){
+          d3.select(this)
+            .style("stroke-width","2px"); 
+            //return age_tip.hide;
         });
 
     // Add the scatterplot
     svg.selectAll("dot")
         .data(valsFMalByAge[i])
       .enter().append("circle")
+        .style("fill", colorPalette2[i])
         .attr("r", 2)
         .attr("cx", function(d) { return x(d.yr); })
         .attr("cy", function(d) { return y(nmod(d.val)); })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide);    
+
+        .on('mouseover',  tip.show)
+        .on('mouseout',  tip.hide);    
   }      
 }
 
