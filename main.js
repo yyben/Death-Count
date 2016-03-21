@@ -132,13 +132,15 @@
 
 
 
-
 //announce variables
+var logsS=true;//switch of log-scale    true:log2 scale,  false:normal scale
 var fnames=[];
 var ages=["~10","11~20","21~30","31~40","41~50","51~60","61~70","71~80","81~90","91~"], years=[95,96,97,98];
 var valsMale=[], valsFMale=[];
 var allValsMal=[],allValsFMal=[];
 var valsMalByAge=[],valsFMalByAge=[], tmpM=[], tmpFM=[];
+var malePathFilter=[true,true,true,true,true,true,true,true,true,true];//male filter by age 
+var femalePathFilter=[true,true,true,true,true,true,true,true,true,true];//female filter by age
 fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.95.csv');
 fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.96.csv');
 fnames.push('https://gitcdn.xyz/repo/yyben/Death-Count/master/data/death.97.csv');
@@ -182,7 +184,7 @@ function parseData(error, death95, death96, death97, death98) {
   //console.log(allValsMal);
   //console.log(allValsFMal);
 
-  drawChart3();
+  drawChart();
 }
 function genEmptyArr(n){//generate an empty array by a given size 
     var arr=[];
@@ -192,174 +194,11 @@ function genEmptyArr(n){//generate an empty array by a given size
     return arr;
 }
 
-function drawChart1(){
-  var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+function drawChart(){
+  $("#chart1").html("");
+  var colorPalette1=["#E1F5FE","#B3E5FC","#81D4FA","#4FC3F7","#29B6F6","#03A9F4","#039BE5","#0288D1","#0277BD","#01579B"];
 
-  var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
-
-  var y = d3.scale.linear()
-      .range([height, 0]);
-
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .ticks(10);
-
-  var svg = d3.select("#chart1").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-  x.domain(valsMale[0].map(function(d) { return d.age; }));
-  y.domain([0, d3.max(valsMale[0], function(d) { return d.val; })]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("count");
-
-  svg.selectAll(".bar")
-      .data(valsMale[0])
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.age); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.val); })
-      .attr("height", function(d) { return height - y(d.val); });
-
-}
-
-function drawChart2(){
-  var margin = {top: 20, right: 20, bottom: 30, left: 60},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-  var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], 1.0);
-
-  var y = d3.scale.linear()
-      .range([height, 0]);
-
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
-      .tickFormat(function(d){return '民國'+d+'年'});
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .ticks(10)
-      .tickFormat(function(d){return d});
-
-  var svg = d3.select("#chart1").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  xdomain=[95,96,97,98];
-  //x.domain(allValsMal.map(function(d) { return d.yr; }));
-  //y.domain([0, d3.max(allValsMal, function(d) { return d.val; })]);
-  x.domain(xdomain.map(function(d) { return d; }));
-  y.domain([nmod(480), nmod(30000)]);
-
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(0)")
-      .attr("y", 0)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("人數 [log2] ");
-
-  // Define the line
-  var valueline = d3.svg.line()
-    .x(function(d) { return x(d.yr); })
-    .y(function(d) { return y(nmod(d.val)); });    
-
-
-    // Add the valueline path.
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(valsMale[0]));
-
-    // Add the scatterplot
-    svg.selectAll("dot")
-        .data(valsMale[0])
-      .enter().append("circle")
-        .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(nmod(d.val)); });    
-
-    // Add the valueline path.
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(valsMale[1]));
-
-    // Add the scatterplot
-    svg.selectAll("dot")
-        .data(valsMale[1])
-      .enter().append("circle")
-        .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(nmod(d.val)); });        
-
-    // Add the valueline path.
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(valsMale[2]));
-
-    // Add the scatterplot
-    svg.selectAll("dot")
-        .data(valsMale[2])
-      .enter().append("circle")
-        .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(nmod(d.val)); });        
-
-
-    // Add the valueline path.
-    svg.append("path")
-        .attr("class", "line")
-        .attr("d", valueline(valsMale[3]));
-
-    // Add the scatterplot
-    svg.selectAll("dot")
-        .data(valsMale[3])
-      .enter().append("circle")
-        .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(nmod(d.val)); });        
-
-}
-function drawChart3(){
-
-  colorPalette1=["#E1F5FE","#B3E5FC","#81D4FA","#4FC3F7","#29B6F6","#03A9F4","#039BE5","#0288D1","#0277BD","#01579B"];
+  var colorPalette2=["#FFF7EC","#FEE8C8","#FDD49E","#FDBB84","#FC8D59","#EF6548","#D7301F","#B30000","#7F0000","#FFFFFF"];
 
   var margin = {top: 20, right: 20, bottom: 30, left: 60},
     width = 960 - margin.left - margin.right,
@@ -387,11 +226,17 @@ function drawChart3(){
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+  
+  var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {return "<strong>數量:</strong> <span style='color:red'>" + d.val + "</span><strong>人</strong><br><strong>年度: 民國</strong> <span style='color:red'>" + d.yr + "</span><strong>年</strong><br><strong>年齡:</strong> <span style='color:red'>" + d.age + "</span><strong>歲</strong>"});
   
   x.domain(years.map(function(d) { return d; }));
   y.domain([nmod(480), nmod(30000)]);
-
+  
+  svg.call(tip);//for tooltip, infobox
+  
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -420,6 +265,7 @@ function drawChart3(){
           'y': 0,
           'stroke': colorPalette1[i],
           'stroke-width': '2px',
+          'stroke-opacity': (malePathFilter[i]?1.0:0.1),
           'fill': 'none'
         });
 
@@ -429,10 +275,82 @@ function drawChart3(){
       .enter().append("circle")
         .attr("r", 2)
         .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(nmod(d.val)); });    
+        .attr("cy", function(d) { return y(nmod(d.val)); })
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);    
+  }      
+  for(var i=0;i<ages.length;i++){
+    // Add the valueline path.
+    svg.append("path")
+        .attr({
+          'd': valueline(valsFMalByAge[i]),
+          'y': 0,
+          'stroke': colorPalette2[i],
+          'stroke-width': '2px',
+          'stroke-opacity': (femalePathFilter[i]?1.0:0.1),
+          'fill': 'none'
+        });
+
+    // Add the scatterplot
+    svg.selectAll("dot")
+        .data(valsFMalByAge[i])
+      .enter().append("circle")
+        .attr("r", 2)
+        .attr("cx", function(d) { return x(d.yr); })
+        .attr("cy", function(d) { return y(nmod(d.val)); })
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);    
   }      
 }
+
 function nmod(val){
-  return Math.log(val)/ Math.LN2;
+  return (logsS?Math.log(val)/ Math.LN2:val);
 }
+
+$(document).ready(function(){
+
+  $("#logScaleBtn").click(function() {
+  
+    $("#normBtn").attr('checked',false);
+    logsS=$("#logScaleBtn").prop('checked');
+    drawChart();
+  });
+  $("#normBtn").click(function() {
+    $("#logScaleBtn").attr('checked',false);
+    logsS=$("#logScaleBtn").attr('checked');
+    drawChart();
+  });
+
+  $("#m10checkbox").click(function(){     malePathFilter[$("#m10checkbox").attr('value')]=!malePathFilter[$("#m10checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m1120checkbox").click(function(){     malePathFilter[$("#m1120checkbox").attr('value')]=!malePathFilter[$("#m1120checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m2130checkbox").click(function(){     malePathFilter[$("#m2130checkbox").attr('value')]=!malePathFilter[$("#m2130checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m3140checkbox").click(function(){     malePathFilter[$("#m3140checkbox").attr('value')]=!malePathFilter[$("#m3140checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m4150checkbox").click(function(){     malePathFilter[$("#m4150checkbox").attr('value')]=!malePathFilter[$("#m4150checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m5160checkbox").click(function(){     malePathFilter[$("#m5160checkbox").attr('value')]=!malePathFilter[$("#m5160checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m6170checkbox").click(function(){     malePathFilter[$("#m6170checkbox").attr('value')]=!malePathFilter[$("#m6170checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m7180checkbox").click(function(){     malePathFilter[$("#m7180checkbox").attr('value')]=!malePathFilter[$("#m7180checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m8190checkbox").click(function(){     malePathFilter[$("#m8190checkbox").attr('value')]=!malePathFilter[$("#m8190checkbox").attr('value')];
+    drawChart();
+  });
+  $("#m91checkbox").click(function(){     malePathFilter[$("#m91checkbox").attr('value')]=!malePathFilter[$("#m91checkbox").attr('value')];
+    drawChart();
+  });
+
+});
 
