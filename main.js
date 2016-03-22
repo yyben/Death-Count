@@ -135,7 +135,9 @@
 //announce variables
 var logsS=true;//switch of log-scale    true:log2 scale,  false:normal scale
 var fnames=[];
-var ages=[{'age':"~10"},{'age':"11~20"},{'age':"21~30"},{'age':"31~40"},{'age':"41~50"},{'age':"51~60"},{'age':"61~70"},{'age':"71~80"},{'age':"81~90"},{'age':"91~"}], years=[95,96,97,98];
+var ages=[{'age':"~10"},{'age':"11~20"},{'age':"21~30"},{'age':"31~40"},{'age':"41~50"},{'age':"51~60"},{'age':"61~70"},{'age':"71~80"},{'age':"81~90"},{'age':"91~"}];
+var ages=["~10","11~20","21~30","31~40","41~50","51~60","61~70","71~80","81~90","91~"], years=[95,96,97,98];
+
 var valsMale=[], valsFMale=[];
 var allValsMal=[],allValsFMal=[];
 var valsMalByAge=[],valsFMalByAge=[], tmpM=[], tmpFM=[];
@@ -196,7 +198,7 @@ function genEmptyArr(n){//generate an empty array by a given size
 
 function drawChart(){
   $("#chart1").html("");
-  var colorPalette1=["#E1F5FE","#B3E5FC","#81D4FA","#4FC3F7","#29B6F6","#03A9F4","#039BE5","#0288D1","#0277BD","#01579B"];
+  var colorPalette1=["rgb(39,6,144)","rgb(77,23,152)","rgb(121,48,159)","rgb(135,57,160)","rgb(162,74,158)","rgb(188,93,151)","rgb(212,114,138)","rgb(232,135,118","rgb(249, 160, 88)","rgb(255, 187, 78)"];
 
   var colorPalette2=["#FFF7EC","#FEE8C8","#FDD49E","#FDBB84","#FC8D59","#EF6548","#D7301F","#B30000","#7F0000","#FFFFFF"];
 
@@ -240,7 +242,7 @@ function drawChart(){
   
 
   x.domain(years.map(function(d) { return d; }));
-  y.domain([nmod(480), nmod(30000)]);
+  y.domain([nmod(180), nmod(30000)]);
   
   svg.call(tip);//for tooltip, infobox
   svg.call(age_tip);
@@ -261,6 +263,18 @@ function drawChart(){
       .style("text-anchor", "end")
       .text("人數 [log2] ");
 
+
+function my_tip(){
+  var show=function(){
+    console.log('mytipshow');
+    //tip.show();
+  }
+  var hide=function(){
+    //tip.hide();
+  }
+  return show;
+}
+
   // Define the line
   var valueline = d3.svg.line()
     .x(function(d) { return x(d.yr); })
@@ -269,71 +283,105 @@ function drawChart(){
   for(var i=0;i<ages.length;i++){
     // Add the valueline path.
     svg.append("path")
+        .attr('id','p_'+i.toString())
+        .attr("class","thepath")
         .attr({
           'd': valueline(valsMalByAge[i]),
           'y': 0,
           'stroke': colorPalette1[i],
-          'stroke-width': '2px',
           'stroke-opacity': (malePathFilter[i]?1.0:0.1),
-          'fill': 'none'
         }).on('mouseover',function(d){
+          //console.log(d)//undefined
+          console.log(this.id)
+          var selectthepath = $('.thepath').not(this);
+          d3.selectAll(selectthepath)
+            .style("opacity",0.1);
+          d3.selectAll('#'+this.id)
+            .style("opacity",1.0);
 
-          d3.select(this)
-            .style("stroke-width","6px");
-          //return age_tip.show;
+          var selectthedot = $('.thedot');
+          d3.selectAll(selectthedot)
+            .style("opacity",0.1);
+          d3.selectAll('#d'+this.id.slice(1,this.id.length))
+            .style("opacity",1.0);
+            
         } )
-        .on('mouseout',function(d){
-          d3.select(this)
-            .style("stroke-width","2px"); 
-            //return age_tip.hide;
+        .on('mouseout',function(){
+          var selectthepath = $('.thepath').not(this);
+          d3.selectAll(selectthepath)
+            .style("opacity",1.0);
+          var selectthedot = $('.thedot');
+          d3.selectAll(selectthedot)
+            .style("opacity",1.0);
+            
+           
         });
 
     // Add the scatterplot
     svg.selectAll("dot")
         .data(valsMalByAge[i])
-      .enter().append("circle")
-        .attr("r", 2)
+      .enter().append("rect")
+        .attr('id','d_'+i.toString())
+        .attr('class','thedot')
         .style("fill", colorPalette1[i])
-        .attr("cx", function(d) { return x(d.yr); })
-        .attr("cy", function(d) { return y(nmod(d.val)); })
+        .attr("x", function(d) { return x(d.yr)-5; })
+        .attr("y", function(d) { return y(nmod(d.val))-5; })
+        .attr("width",10)
+        .attr("height",10)
         .on('mouseover', tip.show)
-        .on('mouseout', tip.hide);    
-  }      
+        .on('mouseout', tip.hide);       
+  } 
+
   for(var i=0;i<ages.length;i++){
     // Add the valueline path.
     svg.append("path")
+        .attr('id','p_'+i.toString())
+        .attr("class","thepath")
         .attr({
           'd': valueline(valsFMalByAge[i]),
           'y': 0,
-          'stroke': colorPalette2[i],
-          'stroke-width': '2px',
+          'stroke': colorPalette1[i],
           'stroke-opacity': (femalePathFilter[i]?1.0:0.1),
-          'fill': 'none'
         })
-        .on('mouseover',function(d,i){ 
-          d3.select(this)
-            .style("stroke-width","6px");
-          //return age_tip.show;
+        .on('mouseover',function(){ 
+          console.log(this.id);
+          var selectthepath = $('.thepath').not(this);
+          d3.selectAll(selectthepath)
+            .style("opacity",0.1);
+          d3.selectAll('#'+this.id)
+             .style("opacity",1.0);
+
+          var selectthedot = $('.thedot');
+          d3.selectAll(selectthedot)
+            .style("opacity",0.1);
+          d3.selectAll('#d'+this.id.slice(1,this.id.length))
+            .style("opacity",1.0);
         } )
-        .on('mouseout',function(d){
-          d3.select(this)
-            .style("stroke-width","2px"); 
-            //return age_tip.hide;
+        .on('mouseout',function(){
+          var selectthepath = $('.thepath').not(this);
+          d3.selectAll(selectthepath)
+            .style("opacity",1.0);
+          var selectthedot = $('.thedot');
+          d3.selectAll(selectthedot)
+            .style("opacity",1.0);
         });
 
     // Add the scatterplot
     svg.selectAll("dot")
         .data(valsFMalByAge[i])
       .enter().append("circle")
-        .style("fill", colorPalette2[i])
-        .attr("r", 2)
+        .attr('id','d_'+i.toString())
+        .attr('class','thedot')
+        .style("fill", colorPalette1[i])
+        .attr("r", 5)
         .attr("cx", function(d) { return x(d.yr); })
         .attr("cy", function(d) { return y(nmod(d.val)); })
-
-        .on('mouseover',  tip.show)
-        .on('mouseout',  tip.hide);    
+        .on('mouseover',  my_tip)
+        .on('mouseout',  my_tip);    
   }      
 }
+
+
 
 function nmod(val){
   return (logsS?Math.log(val)/ Math.LN2:val);
@@ -341,48 +389,6 @@ function nmod(val){
 
 $(document).ready(function(){
 
-  $("#logScaleBtn").click(function() {
-  
-    $("#normBtn").attr('checked',false);
-    logsS=$("#logScaleBtn").prop('checked');
-    drawChart();
-  });
-  $("#normBtn").click(function() {
-    $("#logScaleBtn").attr('checked',false);
-    logsS=$("#logScaleBtn").attr('checked');
-    drawChart();
-  });
-
-  $("#m10checkbox").click(function(){     malePathFilter[$("#m10checkbox").attr('value')]=!malePathFilter[$("#m10checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m1120checkbox").click(function(){     malePathFilter[$("#m1120checkbox").attr('value')]=!malePathFilter[$("#m1120checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m2130checkbox").click(function(){     malePathFilter[$("#m2130checkbox").attr('value')]=!malePathFilter[$("#m2130checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m3140checkbox").click(function(){     malePathFilter[$("#m3140checkbox").attr('value')]=!malePathFilter[$("#m3140checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m4150checkbox").click(function(){     malePathFilter[$("#m4150checkbox").attr('value')]=!malePathFilter[$("#m4150checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m5160checkbox").click(function(){     malePathFilter[$("#m5160checkbox").attr('value')]=!malePathFilter[$("#m5160checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m6170checkbox").click(function(){     malePathFilter[$("#m6170checkbox").attr('value')]=!malePathFilter[$("#m6170checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m7180checkbox").click(function(){     malePathFilter[$("#m7180checkbox").attr('value')]=!malePathFilter[$("#m7180checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m8190checkbox").click(function(){     malePathFilter[$("#m8190checkbox").attr('value')]=!malePathFilter[$("#m8190checkbox").attr('value')];
-    drawChart();
-  });
-  $("#m91checkbox").click(function(){     malePathFilter[$("#m91checkbox").attr('value')]=!malePathFilter[$("#m91checkbox").attr('value')];
-    drawChart();
-  });
 
 });
 

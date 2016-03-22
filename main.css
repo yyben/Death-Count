@@ -1,11 +1,30 @@
 #chart1 {
   font: 15px sans-serif;
 }
+.font_style_num{
+  font-family:"Arial Rounded MT Bold", Times, serif;
+}
 
+.font_style_text{
+  font-family:"Century Gothic", Times, serif;
+  font-size: 18px;
+}
 .axis path, .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
+}
+
+.thepath {
+
+
+	fill: none;
+	stroke-width: 2px;
+}
+.thedot {
+
+
+	
 }
 
 .d3-tip {
