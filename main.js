@@ -344,14 +344,15 @@ function drawChart(){
           'd': valueline(valsMalByAge[i]),
           'y': 0,
           'stroke': colorPalette1[i],
-          'stroke-opacity': (malePathFilter[i]?1.0:0.1),
+          'stroke-opacity': 1.0,
         }).on('mouseover',function(d){
           //console.log(d)//undefined
           //console.log(this.id)
           var selectthepath = $('.thepath').not(this);
           d3.selectAll(selectthepath)
             .transition().duration(transiTime)
-            .style("opacity",0.1);
+            //.style({"stroke-opacity":0.2,"stroke":'gray'});
+            .style("opacity",0.2);
           d3.selectAll('#'+this.id)
             .transition().duration(transiTime)
             .style("opacity",1.0);
@@ -360,28 +361,24 @@ function drawChart(){
           var selectthedot = $('.thedot');
           d3.selectAll(selectthedot)
             .transition().duration(transiTime)
-            .style("opacity",0.1);
+            //.style({"opacity":0.2,"fill":'gray'});
+            .style("opacity",0.2);
           d3.selectAll('#d'+this.id.slice(1,this.id.length))
             .transition().duration(transiTime)
             .style("opacity",1.0);
-
-
-
-          
-
             
         } )
         .on('mouseout',function(){
           var selectthepath = $('.thepath').not(this);
           d3.selectAll(selectthepath)
             .transition().duration(4000)
-            .style("opacity",1.0);
+            .style("opacity",function(d,i){return 1.0;});
           var selectthedot = $('.thedot');
           d3.selectAll(selectthedot)
             .transition().duration(4000)
-            .style("opacity",1.0);
+            .style("opacity",function(d,i){ return 1.0;});
           d3.selectAll('#ageLabel').text('');
-            
+          
            
         });
 
@@ -409,7 +406,7 @@ function drawChart(){
           'd': valueline(valsFMalByAge[i]),
           'y': 0,
           'stroke': colorPalette1[i],
-          'stroke-opacity': (femalePathFilter[i]?1.0:0.1),
+          'stroke-opacity': 1.0,
         })
         .on('mouseover',function(){ 
           //console.log(this.id);
@@ -417,7 +414,8 @@ function drawChart(){
           var selectthepath = $('.thepath').not(this);
           d3.selectAll(selectthepath)
             .transition().duration(transiTime)
-            .style("opacity",0.1);
+            //.style({"stroke-opacity":0.2,"stroke":'gray'});
+            .style("opacity",0.2);
           d3.selectAll('#'+this.id)
             .transition().duration(transiTime)
              .style("opacity",1.0);
@@ -429,7 +427,8 @@ function drawChart(){
           var selectthedot = $('.thedot');
           d3.selectAll(selectthedot)
             .transition().duration(transiTime)
-            .style("opacity",0.1);
+            //.style({"opacity":0.2,"fill":'gray'});
+            .style("opacity",0.2);
           d3.selectAll('#d'+this.id.slice(1,this.id.length))
             .transition().duration(transiTime)
             .style("opacity",1.0);
@@ -438,13 +437,25 @@ function drawChart(){
         .on('mouseout',function(){
           var selectthepath = $('.thepath').not(this);
           d3.selectAll(selectthepath)
-            .transition().duration(4000)
-            .style("opacity",1.0);
+            .transition()
+            .duration(4000)
+            .style("opacity",function(d,i){ return 1.0;})
+            .call(endAll, function () {
+                  //pathColorRecovery();
+                  console.log("transition ends path");
+            });
+            
           var selectthedot = $('.thedot');
           d3.selectAll(selectthedot)
-            .transition().duration(4000)
-            .style("opacity",1.0);
+            .transition()
+            .duration(4000)
+            .style("opacity",function(d,i){ return 1.0;})
+            .call(endAll, function () {
+                  //dotColorRecovery();
+                  console.log("transition ends dot");
+            });
           d3.selectAll('#ageLabel').text('');
+          
         });
 
     // Add the scatterplot
@@ -462,11 +473,38 @@ function drawChart(){
   }      
 }
 
-
+function dotColorRecovery(){
+  for(var i=0;i<ages.length;i++){
+    d3.selectAll($('#d_'+i))
+        .style("fill",colorPalette1[i]);
+  }
+}
+function pathColorRecovery(){
+  for(var i=0;i<ages.length;i++){
+    d3.selectAll($('#p_'+i))
+      .style("stroke",colorPalette1[i]);   
+  }   
+}
 
 function nmod(val){
   return (logsS?Math.log(val)/ Math.LN2:val);
 }
 
+function endAll (transition, callback) {
+    var n;
+
+    if (transition.empty()) {
+        callback();
+    }
+    else {
+        n = transition.size();
+        transition.each("end", function () {
+            n--;
+            if (n === 0) {
+                callback();
+            }
+        });
+    }
+}
 
 
