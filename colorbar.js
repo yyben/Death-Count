@@ -1,4 +1,4 @@
-
+function drawColorBar(){
 	var data=[1,2,3,4,5,6,7,8,9,10];
 	 // d3.text("https://cdn.rawgit.com/yyben/Death-Count/master/data/death.95.csv",function(text){
 	 	//d3.csv.parseRows(text, function(d,i){
@@ -12,7 +12,7 @@
  	var svg1 = d3.select("body").append("div")
         .append("svg").attr("width", 960).attr("height", 300);
         svg1.selectAll("rect").data(data).enter().append("rect")
-		.attr("x", function(d,i){return 240+i*48})
+		.attr("x", function(d,i){return 280+i*48})
 		.attr("y", function(d,i){ return 0;})
 		.attr("width", function(d,i){ return 48;})
 		.attr("height", 48)
@@ -22,7 +22,7 @@
 		  if(i<colorPalette1.length){
 		 	svg1.append("text")
 		      .attr("transform", "rotate(0)")
-		      .attr("transform", "translate("+(248+48*i).toString() +")")
+		      .attr("transform", "translate("+(288+48*i).toString() +")")
 		      .attr("y", 65)
 		      .attr("dy", 0)
 		      .style("text-anchor", "end")
@@ -32,7 +32,7 @@
 		  else{
 		  	svg1.append("text")
 		      .attr("transform", "rotate(0)")
-		      .attr("transform", "translate("+(770).toString() +")")
+		      .attr("transform", "translate("+(810).toString() +")")
 		      .attr("y", 30)
 		      .attr("dy", 0)
 		      .style("text-anchor", "end")
@@ -44,5 +44,5 @@
 
 
 
-
+}
 	

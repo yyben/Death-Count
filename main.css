@@ -9,6 +9,15 @@
   font-family:"Century Gothic", Times, serif;
   font-size: 18px;
 }
+
+.font_style_title{
+  font-family:"Century Gothic", Times, serif;
+  font-size: 28px;
+}
+.font_style_1stTitle{
+  font-family:"Century Gothic", Times, serif;
+  font-size: 45px;
+}
 .axis path, .axis line {
   fill: none;
   stroke: #000;
@@ -23,8 +32,14 @@
 }
 .thedot {
 
+}
 
-	
+.annotation{
+  
+}
+.font_style_1stAnnotation{
+  font-family:"Century Gothic", Times, serif;
+  font-size: 28px;
 }
 
 .d3-tip {
@@ -55,3 +70,5 @@
   top: 100%;
   left: 0;
 }
+
+
