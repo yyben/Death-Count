@@ -13,7 +13,7 @@ function drawColorBar(){
         .append("svg").attr("width", 960).attr("height", 300);
         svg1.selectAll("rect").data(data).enter().append("rect")
 		.attr("x", function(d,i){return 280+i*48})
-		.attr("y", function(d,i){ return 0;})
+		.attr("y", function(d,i){ return 20;})///////////0->20
 		.attr("width", function(d,i){ return 48;})
 		.attr("height", 48)
 		.attr("fill",function(d,i){return colorPalette1[i];})
@@ -23,7 +23,7 @@ function drawColorBar(){
 		 	svg1.append("text")
 		      .attr("transform", "rotate(0)")
 		      .attr("transform", "translate("+(288+48*i).toString() +")")
-		      .attr("y", 65)
+		      .attr("y", 85)////改位置
 		      .attr("dy", 0)
 		      .style("text-anchor", "end")
 		      .text((i*10).toString())
@@ -33,7 +33,7 @@ function drawColorBar(){
 		  	svg1.append("text")
 		      .attr("transform", "rotate(0)")
 		      .attr("transform", "translate("+(810).toString() +")")
-		      .attr("y", 30)
+		      .attr("y", 50)/////改位置
 		      .attr("dy", 0)
 		      .style("text-anchor", "end")
 		      .text("Age")

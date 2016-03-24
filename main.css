@@ -14,6 +14,7 @@
   font-family:"Century Gothic", Times, serif;
   font-size: 28px;
 }
+
 .font_style_1stTitle{
   font-family:"Century Gothic", Times, serif;
   font-size: 45px;
@@ -35,7 +36,8 @@
 }
 
 .annotation{
-  
+  font-family:"Century Gothic", Times, serif;
+  font-size: 20px;
 }
 .font_style_1stAnnotation{
   font-family:"Century Gothic", Times, serif;

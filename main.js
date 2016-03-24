@@ -53,11 +53,6 @@
 // });
 
 
-
-
-
-
-
 //announce variables
 var logsS=true;//switch of log-scale    true:log2 scale,  false:normal scale
 var fnames=[];
@@ -87,8 +82,6 @@ function parseData(error, death95, death96, death97, death98) {
   valsFMale=genEmptyArr(years.length);
   for(var i=0;i<ages.length;i++){
     
-
-
     valsMale[0].push({'yr':'95', 'age':ages[i] ,'val':parseInt(death95[i].Male)});
     valsMale[1].push({'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Male)});
     valsMale[2].push({'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Male)});
@@ -98,45 +91,65 @@ function parseData(error, death95, death96, death97, death98) {
     valsFMale[2].push({'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Female)});
     valsFMale[3].push({'yr':'98', 'age':ages[i] ,'val':parseInt(death98[i].Female)});
 
-
     valsMalByAge.push([{'yr':'95', 'age':ages[i] ,'val':parseInt(death95[i].Male)},{'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Male)},{'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Male)},{'yr':'98', 'age':ages[i] ,'val':parseInt(death98[i].Male)}]);
     valsFMalByAge.push([{'yr':'95', 'age':ages[i] ,'val':parseInt(death95[i].Female)},{'yr':'96', 'age':ages[i] ,'val':parseInt(death96[i].Female)},{'yr':'97', 'age':ages[i] ,'val':parseInt(death97[i].Female)},{'yr':'98', 'age':ages[i] ,'val':parseInt(death98[i].Female)}]);
     
-
   }
 
 
-  allValsMal=valsMale[0].concat(valsMale[1],valsMale[2],valsMale[3]);
-  allValsFMal=valsFMale[0].concat(valsFMale[1],valsFMale[2],valsFMale[3]);
+allValsMal=valsMale[0].concat(valsMale[1],valsMale[2],valsMale[3]);
+allValsFMal=valsFMale[0].concat(valsFMale[1],valsFMale[2],valsFMale[3]);
+function genEmptyArr(n){//generate an empty array by a given size 
+  var arr=[];
+  for (var i=0;i<n;i++){
+      arr.push([]);
+  }
+  return arr;
+}
 
-
-  var animDuration=1000, tCount=0, timer=setInterval(tupdate,animDuration);
-  showTitle(1);
+  var animDuration=1000, tCount=-1, timer=setInterval(tupdate,animDuration);
+  
+  showTitle();
   function tupdate(){
-    if(tCount>=7) return clearInterval(timer);
+    if(tCount>=11) return clearInterval(timer);
 
     switch(tCount){
+      case -1://a break for showing title
+           break;
       case 0:
-           showTitle(2); 
+           showLines(tCount); 
            break; 
+      case 1:
+           showLines(tCount); 
+           break;
       case 2:
-           showTitle(3); 
+           showLines(tCount); 
            break;
       case 3:
-           showTitle(4); 
+           showLines(tCount); 
            break;
       case 4:
-           showTitle(5); 
+           showLines(tCount); //all gray lines
            break;
       case 5:
-           showTitle(99); //all gray lines
+           showLines(tCount); //all gray lines
            break;
       case 6:
-           
+           showLines(tCount); 
+           break;
+      case 7:
+           showLines(tCount); //all gray lines
+           break;
+      case 8:
+           showLines(tCount); //all gray lines
+           break;   
+      case 9:
+           showLines(tCount); //all gray lines
+           break;  
+      default:
            drawChart();
            drawColorBar();
            break;
-      default:
 
     }
     tCount++;
@@ -145,13 +158,7 @@ function parseData(error, death95, death96, death97, death98) {
 
  
 }
-function genEmptyArr(n){//generate an empty array by a given size 
-    var arr=[];
-    for (var i=0;i<n;i++){
-        arr.push([]);
-    }
-    return arr;
-}
+
 
 
 var colorPalette1=["rgb(39,6,144)","rgb(77,23,152)","rgb(121,48,159)","rgb(135,57,160)","rgb(162,74,158)","rgb(188,93,151)","rgb(212,114,138)","rgb(232,135,118","rgb(249, 160, 88)","rgb(255, 187, 78)"];
@@ -163,7 +170,26 @@ var x = d3.scale.ordinal()
 
 var y = d3.scale.linear()
       .range([height, 0]);
-function showTitle(showLineNr){
+
+     
+function showTitle(){
+  
+  $("#chart1").html("");
+  var svg = d3.select("#chart1").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  svg.append("text")
+    .attr('id','title')
+    .attr('x',160)
+    .attr('y',250)
+    .attr('class','font_style_1stTitle')
+    .text('2006~2009 Death Count');//////////Deaths -> Death
+}      
+     
+function showLines(showLineNr){
   
   $("#chart1").html("");
 
@@ -176,12 +202,12 @@ function showTitle(showLineNr){
   x.domain(years.map(function(d) { return d; }));
   y.domain([nmod(180), nmod(30000)]);
   
-  svg.append("text")
-    .attr('id','title')
-    .attr('x',160)
-    .attr('y',250)
-    .attr('class','font_style_1stTitle')
-    .text('2006~2009 Deaths Count');
+  // svg.append("text")
+  //   .attr('id','title')
+  //   .attr('x',160)
+  //   .attr('y',250)
+  //   .attr('class','font_style_1stTitle')
+  //   .text('2006~2009 Deaths Count');
   svg.append("text")
     .attr('id','ageLabel1')
     .attr('x',360)
@@ -259,6 +285,7 @@ function showTitle(showLineNr){
 
 
 
+
 function drawChart(){
   $("#chart1").html("");
   
@@ -310,23 +337,47 @@ function drawChart(){
       .attr("y", -35)
       .attr("x",10)
       .style("text-anchor", "end")
-      .text("Number of deaths [log2] ");
+      .text("Number of death [log2] ");////deaths->death
   svg.append("text")
       .attr('id','ageLabel')
       .attr('x',width-100)
       .attr('y',height-200)
-      .text('');  
-  
+      .text(''); 
+ 
+      
   svg.selectAll('text')
     .attr('class','font_style_num');
 
+ svg.append("rect")////////////////////add rect, circle, text(Male, Female)加一整段
+         .attr("x", 740)
+         .attr("y", 230)
+         .attr("width", 15)
+         .attr("height", 15)
+         .attr("fill","gray")
+  svg.append("circle")
+         .attr("cx", 747)
+         .attr("cy", 280)
+         .attr("r", 7.5)
+         .attr("fill","gray")
+  svg.append("text")
+      .attr('y',244)
+      .attr('x',810)
+      .attr('class','font_style_text')
+      .style("text-anchor", "end")
+      .text("Male");
+  svg.append("text")
+      .attr('y',286)
+      .attr('x',828)
+      .attr('class','font_style_text')
+      .style("text-anchor", "end")
+      .text("Female");/////////////////////add till this row
 
   svg.append("text")
     .attr('id','title')
-    .attr('x',290)
-    .attr('y',10)
+    .attr('x',265)///////290->265
+    .attr('y',0)//////10->0
     .attr('class','font_style_title')
-    .text('2006~2009 Deaths Count');
+    .text('2006~2009 Death Count');////Deaths->Death
 
    
 
@@ -357,7 +408,8 @@ function drawChart(){
             .transition().duration(transiTime)
             .style("opacity",1.0);
           //console.log(ages[parseInt(this.id.slice(2,this.id.length))]);
-          d3.selectAll('#ageLabel').attr('class','annotation').text('age: '+ages[parseInt(this.id.slice(2,this.id.length))]);
+          d3.selectAll('#ageLabel').attr('class','annotation').text('Age: '+ages[parseInt(this.id.slice(2,this.id.length))]);
+          //改了age->Age
           var selectthedot = $('.thedot');
           d3.selectAll(selectthedot)
             .transition().duration(transiTime)
@@ -420,7 +472,7 @@ function drawChart(){
             .transition().duration(transiTime)
              .style("opacity",1.0);
 
-          d3.select('#ageLabel').attr('class','annotation').text('age: '+ages[thisID]);
+          d3.select('#ageLabel').attr('class','annotation').text('Age: '+ages[thisID]);///age->Age
 
           //console.log(ages[parseInt(this.id.slice(2,this.id.length))]);
 
